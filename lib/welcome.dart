@@ -43,18 +43,7 @@ class Welcome extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Welcome",style: TextStyle(fontSize: 22),),
-            // Container(
-            //   width: 100,height: 50,
-            // color: Colors.pink.shade50,
-            // child: Padding(
-            //  padding: const EdgeInsets.all(8.0),
-            // child: InkWell(
-            //   onTap: (){
-            //    logout();
-            //   },
-            //   child:Text("Log Out",style: TextStyle(fontSize: 22),)
-            //    )
-            // )
+
            ElevatedButton(onPressed: (){
               logout();
             },
@@ -65,11 +54,11 @@ class Welcome extends StatelessWidget {
     );
   }
 
-  Future logoutuser() async{
-    final FirebaseAuth auth=await FirebaseAuth.instance;
-     auth.signOut();
-   Get.to(LoginPage());
-  }
+  // Future logoutuser() async{
+  //   final FirebaseAuth auth=await FirebaseAuth.instance;
+  //    auth.signOut();
+  //  Get.to(LoginPage());
+  // }
   Future logout() async{
     final FirebaseAuth auth=await FirebaseAuth.instance;
     print(_googleSignIn.currentUser);
