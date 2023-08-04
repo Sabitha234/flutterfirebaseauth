@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -27,12 +28,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context,AsyncSnapshot<User?> snapshot){
+      home:StreamBuilder(
+        stream: FirebaseAuth.instance.idTokenChanges(),
+        builder: (context,AsyncSnapshot snapshot){
           if(snapshot.hasData && snapshot.data!=null){
             print(snapshot.data);
-            return Welcome();
+            return const Welcome();
           }
           else if(snapshot.connectionState==ConnectionState.waiting){
             return const Center(child:CircularProgressIndicator());
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+
   }
 }
 

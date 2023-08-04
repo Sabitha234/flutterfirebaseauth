@@ -1,13 +1,9 @@
 
+import 'package:emailpassword/services/authservices.dart';
 import 'package:emailpassword/signup_screen.dart';
-import 'package:emailpassword/utils/utils.dart';
-import 'package:emailpassword/welcome.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -16,11 +12,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _googleSignin=GoogleSignIn();
+
   final password=TextEditingController();
   final email=TextEditingController();
-  GoogleSignInAccount? _user;
- GoogleSignInAccount get user=>_user!;
+  AuthServices as=AuthServices();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,13 +79,12 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.all(20.0),
                     child: Container(
                       width: 80,height: 50,
-                      color: Colors.blueGrey,
+                      color: Colors.blue.shade100,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: InkWell(
                           onTap: (){
-                            login();
-
+                            as.login(context,email.text.trim(),password.text.trim());
                           },
                           child: Text("Login",style: TextStyle(fontSize: 22,color: Colors.black),
                         ),
@@ -97,9 +92,11 @@ class _LoginPageState extends State<LoginPage> {
                       )
                   ),
                   ),
-                  TextButton(onPressed: (){
-                    Get.to(SignupPage());
-                  }, child: Text("Forget Password",style: TextStyle(fontSize: 20,color: Colors.black))),
+                  TextButton(style: ButtonStyle(backgroundColor:MaterialStatePropertyAll(Colors.pink.shade50),
+                  ),onPressed: (){
+                   as.changePassword(email.text.trim(),context);
+                  },
+                      child: Text("Forget Password",style: TextStyle(fontSize: 20,color: Colors.black))),
                 ],
               ),
               Container(
@@ -116,8 +113,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               ElevatedButton.icon(onPressed: (){
-                gmailLogin();
-              }, icon: FaIcon(FontAwesomeIcons.google), label: Text("Login to Gmail"))
+                as.gmailLogin(context);
+              }, icon: FaIcon(FontAwesomeIcons.google,color: Colors.red,), label: Text("Login using Gmail"))
             ],
           ),
         ),
@@ -125,33 +122,5 @@ class _LoginPageState extends State<LoginPage> {
       )
     );
   }
-  Future<void> login() async {
-    final firebaseauth=await FirebaseAuth.instance;
-    await  firebaseauth.signInWithEmailAndPassword(email: email.text, password: password.text).whenComplete(() {
-      Get.to(Welcome())  ;
-    });
 
-  }
-
-  Future<void>gmailLogin()async {
-    try {
-      final google_user = await _googleSignin.signIn();
-      if (google_user == null) {
-        return;
-      }
-      _user = google_user;
-      final google_auth = await google_user!.authentication;
-      final credentials = GoogleAuthProvider.credential(
-          idToken: google_auth.idToken,
-          accessToken: google_auth.accessToken
-      );
-      await FirebaseAuth.instance.signInWithCredential(credentials).whenComplete(() {
-        Get.to(Welcome());
-      });
-      showSnackBar(context, "logged in as ${user.email}");
-    }
-    catch(e){
-      print(e.toString());
-    }
-  }
 }
