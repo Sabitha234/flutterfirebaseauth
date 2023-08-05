@@ -1,5 +1,5 @@
 TO DO LIST APP:
-  Built a todo list app intergrated with FIrebase Authentication and Firebase Database
+  Built a todo list app integrated with FIrebase Authentication and Firebase Database
 
 
 
